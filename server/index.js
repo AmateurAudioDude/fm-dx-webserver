@@ -9,10 +9,10 @@ const readline = require('readline');
 const app = express();
 const httpServer = http.createServer(app);
 const WebSocket = require('ws');
-const wss = new WebSocket.Server({ noServer: true });
+const wss = new WebSocket.Server({ noServer: true, perMessageDeflate: true });
 const chatWss = new WebSocket.Server({ noServer: true });
 const rdsWss = new WebSocket.Server({ noServer: true });
-const pluginsWss = new WebSocket.Server({ noServer: true });
+const pluginsWss = new WebSocket.Server({ noServer: true, perMessageDeflate: true });
 const fs = require('fs');
 const path = require('path');
 const net = require('net');
@@ -469,11 +469,9 @@ wss.on('connection', (ws, request) => {
     });
 
     ws.on('close', (code, reason) => {
-        if (clientIp !== '::ffff:127.0.0.1' || 
-            (request.connection && request.connection.remoteAddress && request.connection.remoteAddress !== '::ffff:127.0.1') || 
-            (request.headers && request.headers['origin'] && request.headers['origin'].trim() !== '')) {
-            currentUsers--;
-        }
+      if (clientIp !== '::ffff:127.0.0.1' || (request.connection && request.connection.remoteAddress && request.connection.remoteAddress !== '::ffff:127.0.0.1') || (request.headers && request.headers['origin'] && request.headers['origin'].trim() !== '')) {
+        currentUsers--;
+      }
         dataHandler.showOnlineUsers(currentUsers);
 
         const index = storage.connectedUsers.findIndex(user => user.ip === clientIp);
