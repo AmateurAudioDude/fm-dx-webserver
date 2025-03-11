@@ -69,14 +69,14 @@ var _3LAS = /** @class */ (function () {
         console.log("Stream connection watchdog active.");
         let intervalReconnectWatchdog = setInterval(() => {
             if (Stream) {
-                var endTimeConnectionWatchdog = performance.now();
+                let endTimeConnectionWatchdog = performance.now();
                 elapsedTimeConnectionWatchdog = endTimeConnectionWatchdog - window.startTimeConnectionWatchdog;
-                //console.log(`Stream frame elapsed time: ${elapsedTimeConnectionWatchdog} ms`);
+                //console.log(`Stream frame elapsed time: ${parseInt(elapsedTimeConnectionWatchdog)} ms`);
                 if (elapsedTimeConnectionWatchdog > 2000 && shouldReconnect) {
                     clearInterval(intervalReconnectWatchdog);
                     setTimeout(() => {
                         clearInterval(intervalReconnectWatchdog);
-                        console.log("Unstable internet connection detected, reconnecting (" + elapsedTimeConnectionWatchdog + " ms)...");
+                        console.log("Unstable internet connection detected, reconnecting... (" + parseInt(elapsedTimeConnectionWatchdog) + " ms)");
                         this.Stop();
                         this.Start();
                     }, 2000);
