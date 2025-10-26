@@ -214,6 +214,7 @@ var dataToSend = {
   sigRaw: '',
   sigTop: -Infinity,
   bw: 0,
+  bwCurrent: 0,
   st: false,
   stForced: false,
   rds: false,
@@ -254,6 +255,8 @@ const filterMappings = {
   'G00': { eq: 0, ims: 0 }
 };
 
+// Set in the admin setup menu
+const getIsNewFirmware = () => serverConfig.tuner?.useNewFirmwareBandwidth ?? false;
 
 var legacyRdsPiBuffer = null;
 var lastUpdateTime = Date.now();
@@ -299,6 +302,19 @@ function handleData(wss, receivedData, rdsWss) {
         initialData.bw = receivedLine.substring(1);
         dataToSend.bw = receivedLine.substring(1);
         break;
+      case receivedLine.startsWith('W'): // Bandwidth message
+        const bwValue = receivedLine.substring(1);
+
+        if (getIsNewFirmware()) {
+          // New firmware: W message contains actual bandwidth
+          initialData.bwCurrent = bwValue;
+          dataToSend.bwCurrent = bwValue;
+        } else {
+          // Old firmware: W message contains user's selection
+          initialData.bw = bwValue;
+          dataToSend.bw = bwValue;
+        }
+        break;
       case receivedLine.startsWith('P'): // PI Code
         rdsReceived();
         modifiedData = receivedLine.slice(1);
@@ -341,10 +357,6 @@ function handleData(wss, receivedData, rdsWss) {
           dataToSend.eq = mapping.eq;
           dataToSend.ims = mapping.ims;
         }
-        break;
-      case receivedLine.startsWith('W'): // Bandwidth
-        initialData.bw = receivedLine.substring(1);
-        dataToSend.bw = receivedLine.substring(1);
         break;
       case receivedLine.startsWith('Sm'):
         processSignal(receivedLine, false, false);

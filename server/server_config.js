@@ -110,6 +110,9 @@ let serverConfig = {
   bwSwitch: false,
   bwAutoStartup: "0",
   bwAutoNoUsers: "0",
+  tuner: {
+    useNewFirmwareBandwidth: false
+  },
   ceqStartup: "0",
   ceqNoUsers: "0",
   imsStartup: "0",

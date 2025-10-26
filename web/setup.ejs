@@ -427,6 +427,9 @@
                                 <h4>Bandwidth switch</h4>
                                 <p>Bandwidth switch allows the user to set the bandwidth manually.</p>
                                 <%- include('_components', {component: 'checkbox', cssClass: '', label: 'Bandwidth switch', id: 'bwSwitch'}) %><br>
+                                <h4 class="top-25">Firmware bandwidth mode</h4>
+                                <p>Enable this if using new FM-DX-Tuner firmware with actual bandwidth reporting.</p>
+                                <%- include('_components', {component: 'checkbox', cssClass: '', label: 'New bandwidth mode', id: 'tuner-useNewFirmwareBandwidth'}) %><br>
                             </div>
                             <div class="panel-50 no-bg">
                                 <h4>Automatic shutdown</h4>

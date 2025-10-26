@@ -1008,12 +1008,31 @@ const updateDataElements = throttle(function(parsedData) {
     
     $dataAntInput.val($('.data-ant li[data-value="' + parsedData.ant + '"]').first().text());
     
-    if (parsedData.bw < 500) {
-        $dataBwInput.val($('.data-bw li[data-value2="' + parsedData.bw + '"]').first().text());
+    // Update bandwidth display
+    // Old firmware: bw=user's selection, bwCurrent=0
+    // New firmware: bw=user's selection, bwCurrent=actual bandwidth
+    let displayBw = parsedData.bw;
+    let displayBwCurrent = parsedData.bwCurrent;
+
+    if (displayBw === 0 || displayBw === '0') {
+        // Auto mode
+        if (displayBwCurrent && displayBwCurrent !== 0 && displayBwCurrent !== '0') {
+            // New firmware: display actual current bandwidth value in brackets
+            const currentBwKhz = (displayBwCurrent / 1000).toFixed(0);
+            $dataBwInput.val('(' + currentBwKhz + ' kHz)');
+        } else {
+            // Old firmware: display "Auto"
+            $dataBwInput.val('Auto');
+        }
     } else {
-        $dataBwInput.val($('.data-bw li[data-value="' + parsedData.bw + '"]').first().text());
+        // Fixed bandwidth mode - display from dropdown
+        if (displayBw < 500) {
+            $dataBwInput.val($('.data-bw li[data-value2="' + displayBw + '"]').first().text());
+        } else {
+            $dataBwInput.val($('.data-bw li[data-value="' + displayBw + '"]').first().text());
+        }
     }
-    
+
     if (parsedData.txInfo.tx.length > 1) {
         updateTextIfChanged($('#data-station-name'), parsedData.txInfo.tx.replace(/%/g, '%25'));
         updateTextIfChanged($('#data-station-erp'), parsedData.txInfo.erp);
