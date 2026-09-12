@@ -210,6 +210,7 @@ if (serverConfig.xdrd.wirelessConnection === false) {
     
     serialport.on('data', (data) => {
       helpers.resolveDataBuffer(data, wss, rdsWss);
+      pluginsApi.emitRawSerialData(data);
     });
 
     serialport.on('error', (error) => {
